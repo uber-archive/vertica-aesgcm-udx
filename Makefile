@@ -33,13 +33,13 @@ override LDFLAGS += -shared
 override LDLIBS += -L lib -l:libsodium.a
 
 # libsodium targets & variables.
-LIBSODIUM_VERSION=1.0.11
+LIBSODIUM_VERSION=1.0.15
 LIBSODIUM_BN=libsodium-$(LIBSODIUM_VERSION)
 LIBSODIUM_TAR_GZ=$(LIBSODIUM_BN).tar.gz
-LIBSODIUM_URLS += "https://download.libsodium.org/libsodium/releases/old/$(LIBSODIUM_TAR_GZ)"
+LIBSODIUM_URLS += "https://download.libsodium.org/libsodium/releases/$(LIBSODIUM_TAR_GZ)"
 LIBSODIUM_URLS += "https://github.com/jedisct1/libsodium/releases/download/${LIBSODIUM_VERSION}/${LIBSODIUM_TAR_GZ}"
 # SHA256 hash calculated with: shasum -a256 -p $FILE | cut -d' ' -f1
-LIBSODIUM_SHA256=a14549db3c49f6ae2170cbbf4664bd48ace50681045e8dbea7c8d9fb96f9c765
+LIBSODIUM_SHA256=fb6a9e879a2f674592e4328c5d9f79f082405ee4bb05cb6e679b90afe9e178f4
 
 libsodium_deps += lib/libsodium.a
 libsodium_deps += include/sodium.h
