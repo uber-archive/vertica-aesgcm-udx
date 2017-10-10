@@ -36,7 +36,7 @@ override LDLIBS += -L lib -l:libsodium.a
 LIBSODIUM_VERSION=1.0.11
 LIBSODIUM_BN=libsodium-$(LIBSODIUM_VERSION)
 LIBSODIUM_TAR_GZ=$(LIBSODIUM_BN).tar.gz
-LIBSODIUM_URL=https://download.libsodium.org/libsodium/releases/$(LIBSODIUM_TAR_GZ)
+LIBSODIUM_URL=https://download.libsodium.org/libsodium/releases/old/$(LIBSODIUM_TAR_GZ)
 # SHA256 hash calculated with: shasum -a256 -p $FILE | cut -d' ' -f1
 LIBSODIUM_SHA256=a14549db3c49f6ae2170cbbf4664bd48ace50681045e8dbea7c8d9fb96f9c765
 
