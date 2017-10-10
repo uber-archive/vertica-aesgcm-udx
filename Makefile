@@ -67,8 +67,8 @@ src:
 	mkdir -p $@
 
 distclean: clean
-	@$(RM) -r include lib
-	@$(RM) $(LIBSODIUM_BN) $(LIBSODIUM_TAR_GZ) $(LIBSODIUM_TAR_GZ).tmp
+	@$(RM) -r include lib $(LIBSODIUM_BN)
+	@$(RM) $(LIBSODIUM_TAR_GZ) $(LIBSODIUM_TAR_GZ).tmp
 
 objects += AESGCMDecrypt.o
 objects += AESGCMEncrypt.o
