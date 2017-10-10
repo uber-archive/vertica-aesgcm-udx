@@ -82,10 +82,10 @@ Vertica.o: $(VERTICA_INCLUDES)/Vertica.cpp
 $(LIBNAME): $(objects)
 	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-install-ddl: install.sql | $(LIBNAME)
+install install-ddl: install.sql | $(LIBNAME)
 	$(VSQL) $(VSQL_FLAGS) -f $<
 
-uninstall-ddl: uninstall.sql
+uninstall uninstall-ddl: uninstall.sql
 	$(VSQL) $(VSQL_FLAGS) -f $<
 
 test-key.hex: test-key.txt
@@ -124,4 +124,4 @@ help:
 	@echo "                       diagnose errors encountered when building these"
 	@echo "                       targets."
 
-.PHONY: all clean clean-test deps distclean help install-ddl test uninstall-ddl
+.PHONY: all clean clean-test deps distclean help install install-ddl test uninstall uninstall-ddl
