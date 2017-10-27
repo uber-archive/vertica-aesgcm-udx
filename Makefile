@@ -33,12 +33,13 @@ override LDFLAGS += -shared
 override LDLIBS += -L lib -l:libsodium.a
 
 # libsodium targets & variables.
-LIBSODIUM_VERSION=1.0.11
+LIBSODIUM_VERSION=1.0.15
 LIBSODIUM_BN=libsodium-$(LIBSODIUM_VERSION)
 LIBSODIUM_TAR_GZ=$(LIBSODIUM_BN).tar.gz
-LIBSODIUM_URL=https://download.libsodium.org/libsodium/releases/$(LIBSODIUM_TAR_GZ)
+LIBSODIUM_URLS += "https://download.libsodium.org/libsodium/releases/$(LIBSODIUM_TAR_GZ)"
+LIBSODIUM_URLS += "https://github.com/jedisct1/libsodium/releases/download/${LIBSODIUM_VERSION}/${LIBSODIUM_TAR_GZ}"
 # SHA256 hash calculated with: shasum -a256 -p $FILE | cut -d' ' -f1
-LIBSODIUM_SHA256=a14549db3c49f6ae2170cbbf4664bd48ace50681045e8dbea7c8d9fb96f9c765
+LIBSODIUM_SHA256=fb6a9e879a2f674592e4328c5d9f79f082405ee4bb05cb6e679b90afe9e178f4
 
 libsodium_deps += lib/libsodium.a
 libsodium_deps += include/sodium.h
@@ -50,9 +51,12 @@ deps += $(patsubst %, $(LIBSODIUM_INSTALL_DIR)/%, $(libsodium_deps))
 deps: $(deps)
 
 $(LIBSODIUM_TAR_GZ):
-	$(CURL) -o $@.tmp $(LIBSODIUM_URL)
-	echo "$(LIBSODIUM_SHA256) ?$@.tmp" | $(SHA256SUM) -c -
-	mv $@.tmp $@
+	for URL in $(LIBSODIUM_URLS); do \
+		$(CURL) -L -o $@.tmp "$$URL" && \
+		echo "$(LIBSODIUM_SHA256) ?$@.tmp" | $(SHA256SUM) -c - && \
+		mv $@.tmp $@ && \
+		break; \
+	done
 
 $(libsodium_deps): $(LIBSODIUM_TAR_GZ)
 	$(TAR) -xzf $<
@@ -63,8 +67,8 @@ src:
 	mkdir -p $@
 
 distclean: clean
-	@$(RM) -r include lib
-	@$(RM) $(LIBSODIUM_BN) $(LIBSODIUM_TAR_GZ) $(LIBSODIUM_TAR_GZ).tmp
+	@$(RM) -r include lib $(LIBSODIUM_BN)
+	@$(RM) $(LIBSODIUM_TAR_GZ) $(LIBSODIUM_TAR_GZ).tmp
 
 objects += AESGCMDecrypt.o
 objects += AESGCMEncrypt.o
@@ -82,10 +86,10 @@ Vertica.o: $(VERTICA_INCLUDES)/Vertica.cpp
 $(LIBNAME): $(objects)
 	$(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-install-ddl: install.sql | $(LIBNAME)
+install install-ddl: install.sql | $(LIBNAME)
 	$(VSQL) $(VSQL_FLAGS) -f $<
 
-uninstall-ddl: uninstall.sql
+uninstall uninstall-ddl: uninstall.sql
 	$(VSQL) $(VSQL_FLAGS) -f $<
 
 test-key.hex: test-key.txt
@@ -124,4 +128,4 @@ help:
 	@echo "                       diagnose errors encountered when building these"
 	@echo "                       targets."
 
-.PHONY: all clean clean-test deps distclean help install-ddl test uninstall-ddl
+.PHONY: all clean clean-test deps distclean help install install-ddl test uninstall uninstall-ddl
